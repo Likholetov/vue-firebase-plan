@@ -4,7 +4,7 @@
             <div class="page-title">
                 <h3>Счет</h3>
 
-                <button class="btn waves-effect waves-light btn-small">
+                <button class="btn waves-effect waves-light btn-small" @click="refresh">
                     <i class="material-icons">refresh</i>
                 </button>
             </div>
@@ -13,9 +13,14 @@
 
             <div v-else class="row">
 
-                <home-bill></home-bill>
+                <HomeBill
+                    :rates="currency.rates"
+                />
 
-                <home-currency></home-currency>
+                <HomeCurrency
+                    :rates="currency.rates"
+                    :date="currency.date"
+                />
 
             </div>
         </div>
@@ -33,6 +38,17 @@
             loading: true,
             currency: null
         }),
+		async mounted() {
+			this.currency = await this.$store.dispatch('fetchCurrency');
+            this.loading = false;
+		},
+        methods: {
+            async refresh(){
+                this.loading = true;
+                this.currency = await this.$store.dispatch('fetchCurrency');
+                this.loading = false;
+            }
+        },
         comments: {
             HomeBill, HomeCurrency
         }
