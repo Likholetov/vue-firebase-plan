@@ -54,7 +54,7 @@
         name: "CategoryCreate",
         data: ()=>({
             title: '',
-            limit: 1
+            limit: 100
         }),
         validations: {
             title: {required},
@@ -64,11 +64,23 @@
             M.updateTextFields()
         },
         methods: {
-            submitHandler(){
+            async submitHandler(){
                 if (this.$v.$invalid){
                     this.$v.$touch();
                     return
                 }
+
+                try {
+					const category = await this.$store.dispatch('createCategory', {
+                        title: this.title,
+                        limit: this.limit
+                    });
+                    this.title = '';
+                    this.limit = 100;
+                    this.$v.$reset();
+                    this.$message('Категория создана успешно!');
+                    this.$emit('created', category)
+                } catch (e) {}
             }
         }
     }
