@@ -4,7 +4,9 @@
             <h3>Новая запись</h3>
         </div>
 
-        <form class="form">
+        <Loader v-if="loading"/>
+
+        <form @submit.prevent="submitHandler" class="form" v-else>
             <div class="input-field" >
                 <select>
                     <option
@@ -40,7 +42,7 @@
             <div class="input-field">
                 <input
                         id="amount"
-                        type="number"
+                        type="text"
                 >
                 <label for="amount">Сумма</label>
                 <span class="helper-text invalid">amount пароль</span>
@@ -66,7 +68,35 @@
 
 <script>
     export default {
-        name: "Record"
+        name: "Record",
+        data: () => ({
+            categories: [],
+            select: null,
+            loading: true,
+        }),
+        methods: {
+            async submitHandler(){
+                if (this.$v.$invalid){
+                    this.$v.$touch();
+                    return
+                }
+
+                try {
+
+                } catch (e) {}
+            }
+        },
+        async mounted(){
+            this.categories = await this.$store.dispatch('fetchCategories');
+            this.loading = false;
+            
+            this.select = M.FormSelect.init(this.$refs.select);
+        },
+        destroyed(){
+            if (this.select && this.select.destroy) {
+                this.select.destroy()
+            }
+        }
     }
 </script>
 
