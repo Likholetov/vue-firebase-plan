@@ -24,15 +24,12 @@
                             id="limit"
                             type="text"
                             v-model.trim="limit"
-                            :class="{invalid: ($v.limit.$dirty && !$v.limit.required) || ($v.limit.$dirty && !$v.limit.minValue) || ($v.limit.$dirty && !$v.limit.integer) }"
+                            :class="{invalid: ($v.limit.$dirty && !$v.limit.required) || ($v.limit.$dirty && !$v.limit.minValue)}"
                     >
                     <label for="limit">Лимит</label>
                     <span class="helper-text invalid"
                           v-if="$v.limit.$dirty && !$v.limit.required"
                     >Введите лимит</span>
-                    <span class="helper-text invalid"
-                          v-if="$v.limit.$dirty && !$v.limit.integer"
-                    >Введите целое число</span>
                     <span class="helper-text invalid"
                           v-if="$v.limit.$dirty && !$v.limit.minValue"
                     >Лимит не должен быть менее {{$v.limit.$params.minValue.min}}</span>
@@ -48,7 +45,7 @@
 </template>
 
 <script>
-    import {required, integer, minValue} from 'vuelidate/lib/validators'
+    import {required, minValue} from 'vuelidate/lib/validators'
 
     export default {
         name: "CategoryCreate",
@@ -58,16 +55,16 @@
         }),
         validations: {
             title: {required},
-            limit: {required, integer, minValue: minValue(1)},
+            limit: {required, minValue: minValue(1)},
         },
         mounted(){
-            M.updateTextFields()
+            M.updateTextFields();
         },
         methods: {
             async submitHandler(){
                 if (this.$v.$invalid){
                     this.$v.$touch();
-                    return
+                    return;
                 }
 
                 try {
@@ -79,7 +76,7 @@
                     this.limit = 100;
                     this.$v.$reset();
                     this.$message('Категория создана успешно!');
-                    this.$emit('created', category)
+                    this.$emit('created', category);
                 } catch (e) {}
             }
         }

@@ -35,15 +35,12 @@
                             id="limit"
                             type="text"
                             v-model.trim="limit"
-                            :class="{invalid: ($v.limit.$dirty && !$v.limit.required) || ($v.limit.$dirty && !$v.limit.minValue) || ($v.limit.$dirty && !$v.limit.integer) }"
+                            :class="{invalid: ($v.limit.$dirty && !$v.limit.required) || ($v.limit.$dirty && !$v.limit.minValue)}"
                     >
                     <label for="limit">Лимит</label>
                     <span class="helper-text invalid"
                           v-if="$v.limit.$dirty && !$v.limit.required"
                     >Введите лимит</span>
-                    <span class="helper-text invalid"
-                          v-if="$v.limit.$dirty && !$v.limit.integer"
-                    >Введите целое число</span>
                     <span class="helper-text invalid"
                           v-if="$v.limit.$dirty && !$v.limit.minValue"
                     >Лимит не должен быть менее {{$v.limit.$params.minValue.min}}</span>
@@ -59,7 +56,7 @@
 </template>
 
 <script>
-    import {required, integer, minValue} from 'vuelidate/lib/validators'
+    import {required, minValue} from 'vuelidate/lib/validators'
 
     export default {
         name: "CategoryEdit",
@@ -77,7 +74,7 @@
         }),
         validations: {
             title: {required},
-            limit: {required, integer, minValue: minValue(1)},
+            limit: {required, minValue: minValue(1)},
         },
         watch: {
             current(catId){
@@ -114,11 +111,11 @@
         },
         mounted(){
             this.select = M.FormSelect.init(this.$refs.select);
-            M.updateTextFields()
+            M.updateTextFields();
         },
         destroyed(){
             if (this.select && this.select.destroy) {
-                this.select.destroy()
+                this.select.destroy();
             }
         }
     }

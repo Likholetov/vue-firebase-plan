@@ -6,11 +6,16 @@
 
         <Loader v-if="loading"/>
 
+        <p class="center" v-else-if="!categories.length">Категорий пока нет. <router-link to="/categories">Добавить новую категорию.</router-link></p>
+
         <form @submit.prevent="submitHandler" class="form" v-else>
             <div class="input-field" >
-                <select>
+                <select ref="select" v-model="category">
                     <option
-                    >name cat</option>
+                        v-for="c in categories"
+                        :key="c.id"
+                        :value="c.id"
+                    >{{ c.title }}</option>
                 </select>
                 <label>Выберите категорию</label>
             </div>
@@ -22,6 +27,7 @@
                             name="type"
                             type="radio"
                             value="income"
+                            v-model="type"
                     />
                     <span>Доход</span>
                 </label>
@@ -34,6 +40,7 @@
                             name="type"
                             type="radio"
                             value="outcome"
+                            v-model="type"
                     />
                     <span>Расход</span>
                 </label>
@@ -41,21 +48,31 @@
 
             <div class="input-field">
                 <input
-                        id="amount"
-                        type="text"
+                    id="amount"
+                    type="text"
+                    v-model.number="amount"
+                    :class="{invalid: ($v.amount.$dirty && !$v.amount.required) || ($v.amount.$dirty && !$v.amount.minValue)}"
                 >
                 <label for="amount">Сумма</label>
-                <span class="helper-text invalid">amount пароль</span>
+                <span class="helper-text invalid"
+                        v-if="$v.amount.$dirty && !$v.amount.required"
+                >Введите сумму</span>
+                <span class="helper-text invalid"
+                        v-if="$v.amount.$dirty && !$v.amount.minValue"
+                >Сумма не должна быть менее {{$v.amount.$params.minValue.min}}</span>
             </div>
 
             <div class="input-field">
                 <input
                         id="description"
                         type="text"
+                        v-model.trim="description"
+                        :class="{invalid: $v.description.$dirty && !$v.description.required}"
                 >
                 <label for="description">Описание</label>
-                <span
-                        class="helper-text invalid">description пароль</span>
+                <span class="helper-text invalid"
+                          v-if="$v.description.$dirty && !$v.description.required"
+                    >Введите описание</span>
             </div>
 
             <button class="btn waves-effect waves-light" type="submit">
@@ -67,34 +84,84 @@
 </template>
 
 <script>
+    import {required, minValue} from 'vuelidate/lib/validators';
+    import {mapGetters} from 'vuex';
+
     export default {
         name: "Record",
         data: () => ({
             categories: [],
             select: null,
             loading: true,
+            category: null,
+            type: 'outcome',
+            amount: '',
+            description: ''
         }),
+        validations: {
+            description: {required},
+            amount: {required, minValue: minValue(1)},
+        },
+        computed: {
+            ...mapGetters(['info']),
+            canCreateRecord(){
+                if (this.type === 'income') {
+                    return true;
+                }
+
+                return this.info.bill >= this.amount;
+            }
+        },
         methods: {
             async submitHandler(){
                 if (this.$v.$invalid){
                     this.$v.$touch();
-                    return
+                    return;
                 }
 
-                try {
+                if (this.canCreateRecord) {
+                    try {
+                        await this.$store.dispatch('createRecord', {
+                            categoryId: this.category,
+                            amount: this.amount,
+                            description: this.description,
+                            type: this.type,
+                            date: new Date().toJSON()
+                        });
 
-                } catch (e) {}
+                        const bill = this.type === 'income'
+                            ? this.info.bill + this.amount
+                            : this.info.bill - this.amount;
+
+                        await this.$store.dispatch('updateInfo', {bill});
+                        this.$message(`Запись успешно создана. На вашем счету ${bill}.`);
+                        this.$v.$reset();
+                        this.amount = '';
+                        this.description = '';
+                    } catch (e) {
+                        
+                    }
+                } else {
+                    this.$message(`Недостаточно средств на счету (${this.amount - this.info.bill})`);
+                }
             }
         },
         async mounted(){
             this.categories = await this.$store.dispatch('fetchCategories');
             this.loading = false;
+
+            if (this.categories.length) {
+                this.category = this.categories[0].id;
+            }
             
-            this.select = M.FormSelect.init(this.$refs.select);
+            setTimeout(() => {
+                this.select = M.FormSelect.init(this.$refs.select);
+                M.updateTextFields();
+            }, 0);
         },
         destroyed(){
             if (this.select && this.select.destroy) {
-                this.select.destroy()
+                this.select.destroy();
             }
         }
     }
