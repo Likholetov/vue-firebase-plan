@@ -16,7 +16,7 @@
                     @updated="updateCategories"
                 />
 
-                <h4 class="center" v-else>Вы не добавляли категорий</h4>
+                <p class="center" v-else>Вы не добавляли категорий</p>
 
             </div>
         </section>
