@@ -13,36 +13,51 @@
         <p class="center" v-else-if="!records.length">Записей пока нет.</p>
 
         <section v-else>
-            <HistoryTable :records="records"/>
+            <HistoryTable :records="items"/>
+
+            <Paginate
+                v-if="pageCount>1"
+                v-model="page"
+                :page-count="pageCount"
+                :click-handler="pageChangeHandler"
+                :prev-text="'Назад'"
+                :next-text="'Вперед'"
+                :container-class="'pagination center'"
+                :page-class="'waves-effect'"
+            />
         </section>
     </div>
 </template>
 
 <script>
-    import HistoryTable from "../components/HistoryTable"
+    import HistoryTable from "../components/HistoryTable";
+    import paginationMixim from "../mixins/pagination.mixin";
 
     export default {
         name: "History",
+        mixins: [
+            paginationMixim
+        ],
         components: {
             HistoryTable
         },
         data: () => ({
             loading: true,
-            records: [],
-            categories: []
+            records: []
         }),
         async mounted(){
-            //this.records = await this.$store.dispatch('fetchRecords');
-            const records = await this.$store.dispatch('fetchRecords');
-            this.categories = await this.$store.dispatch('fetchCategories');
-            this.records = records.map(record => {
+            this.records = await this.$store.dispatch('fetchRecords');
+            const categories = await this.$store.dispatch('fetchCategories');
+
+            this.setupPagination(this.records.map(record => {
                 return {
                     ...record,
-                    categoryName: this.categories.find(c => c.id === record.categoryId).title,
+                    categoryName: categories.find(c => c.id === record.categoryId).title,
                     typeClass: record.type === 'income' ? 'green' : 'red',
                     typeText: record.type === 'income' ? 'доход' : 'расход'
                 };
-            });
+            }));
+
             this.loading = false;
         }
     }
