@@ -27,6 +27,11 @@ import CategoryEdit from '../components/CategoryEdit';
 import { log } from 'util';
 
 export default {
+	metaInfo() {
+		return {
+			title: this.$title('Категории')
+		};
+	},
 	name: 'categories',
 	data: () => ({
 		categories: [],

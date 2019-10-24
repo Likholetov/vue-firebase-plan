@@ -41,6 +41,11 @@ export default {
 	components: {
 		HistoryTable
 	},
+	metaInfo() {
+		return {
+			title: this.$title('История')
+		};
+	},
 	data: () => ({
 		loading: true,
 		records: []
@@ -51,9 +56,7 @@ export default {
 				this.records.map(record => {
 					return {
 						...record,
-						categoryName: categories.find(
-							c => c.id === record.categoryId
-						).title,
+						categoryName: categories.find(c => c.id === record.categoryId).title,
 						typeClass: record.type === 'income' ? 'green' : 'red',
 						typeText: record.type === 'income' ? 'доход' : 'расход'
 					};
@@ -67,10 +70,7 @@ export default {
 						label: 'Расходы по категориям',
 						data: categories.map(c => {
 							return this.records.reduce((total, r) => {
-								if (
-									r.categoryId === c.id &&
-									r.type === 'outcome'
-								) {
+								if (r.categoryId === c.id && r.type === 'outcome') {
 									total += +r.amount;
 								}
 								return total;

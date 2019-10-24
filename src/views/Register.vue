@@ -8,20 +8,14 @@
 					type="text"
 					v-model.trim="email"
 					:class="{
-						invalid:
-							($v.email.$dirty && !$v.email.required) ||
-							($v.email.$dirty && !$v.email.email)
+						invalid: ($v.email.$dirty && !$v.email.required) || ($v.email.$dirty && !$v.email.email)
 					}"
 				/>
 				<label for="email">Электронная почта</label>
-				<small
-					class="helper-text invalid"
-					v-if="$v.email.$dirty && !$v.email.required"
+				<small class="helper-text invalid" v-if="$v.email.$dirty && !$v.email.required"
 					>Поле не должно быть пустым</small
 				>
-				<small
-					class="helper-text invalid"
-					v-else-if="$v.email.$dirty && !$v.email.email"
+				<small class="helper-text invalid" v-else-if="$v.email.$dirty && !$v.email.email"
 					>Введите корректную электронную почту</small
 				>
 			</div>
@@ -37,16 +31,11 @@
 					}"
 				/>
 				<label for="password">Пароль</label>
-				<small
-					class="helper-text invalid"
-					v-if="$v.password.$dirty && !$v.password.required"
+				<small class="helper-text invalid" v-if="$v.password.$dirty && !$v.password.required"
 					>Поле не должно быть пустым</small
 				>
-				<small
-					class="helper-text invalid"
-					v-else-if="$v.password.$dirty && !$v.password.minLength"
-					>Пароль должен быть длиннее
-					{{ $v.password.$params.minLength.min }} знаков</small
+				<small class="helper-text invalid" v-else-if="$v.password.$dirty && !$v.password.minLength"
+					>Пароль должен быть длиннее {{ $v.password.$params.minLength.min }} знаков</small
 				>
 			</div>
 			<div class="input-field">
@@ -57,9 +46,7 @@
 					:class="{ invalid: $v.name.$dirty && !$v.name.required }"
 				/>
 				<label for="name">Имя</label>
-				<small
-					class="helper-text invalid"
-					v-if="$v.name.$dirty && !$v.name.required"
+				<small class="helper-text invalid" v-if="$v.name.$dirty && !$v.name.required"
 					>Поле не должно быть пустым</small
 				>
 			</div>
@@ -69,19 +56,14 @@
 					<span>С правилами согласен</span>
 				</label>
 				<br />
-				<small
-					class="helper-text invalid"
-					v-if="$v.agree.$dirty && !$v.agree.checked"
+				<small class="helper-text invalid" v-if="$v.agree.$dirty && !$v.agree.checked"
 					>Вы должны согласиться с правилами
 				</small>
 			</p>
 		</div>
 		<div class="card-action">
 			<div>
-				<button
-					class="btn waves-effect waves-light auth-submit"
-					type="submit"
-				>
+				<button class="btn waves-effect waves-light auth-submit" type="submit">
 					Зарегистрироваться
 					<i class="material-icons right">send</i>
 				</button>
@@ -100,6 +82,11 @@ import { email, required, minLength } from 'vuelidate/lib/validators';
 
 export default {
 	name: 'Registration',
+	metaInfo() {
+		return {
+			title: this.$title('Регистрация')
+		};
+	},
 	data: () => ({
 		email: '',
 		password: '',

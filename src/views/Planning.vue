@@ -9,9 +9,7 @@
 
 		<p class="center" v-else-if="!categories.length">
 			Категорий пока нет.
-			<router-link to="/categories"
-				>Добавить новую категорию.</router-link
-			>
+			<router-link to="/categories">Добавить новую категорию.</router-link>
 		</p>
 
 		<section v-else>
@@ -38,6 +36,11 @@ import currencyFilter from '../filters/currency.filter';
 
 export default {
 	name: 'Planning',
+	metaInfo() {
+		return {
+			title: this.$title('Планирование')
+		};
+	},
 	data: () => ({
 		loading: true,
 		categories: []
@@ -59,13 +62,12 @@ export default {
 
 			const percent = (100 * spend) / cat.limit;
 			const progressPercent = percent > 100 ? 100 : percent;
-			const progressColor =
-				percent < 60 ? 'green' : percent < 100 ? 'yellow' : 'red';
+			const progressColor = percent < 60 ? 'green' : percent < 100 ? 'yellow' : 'red';
 
 			const tooltipValue = cat.limit - spend;
-			const tooltip = `${
-				tooltipValue < 0 ? 'Превышение на' : 'Осталось'
-			} ${currencyFilter(Math.abs(tooltipValue))}`;
+			const tooltip = `${tooltipValue < 0 ? 'Превышение на' : 'Осталось'} ${currencyFilter(
+				Math.abs(tooltipValue)
+			)}`;
 
 			return {
 				...cat,

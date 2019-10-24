@@ -48,6 +48,11 @@ import { required, minValue } from 'vuelidate/lib/validators';
 
 export default {
 	name: 'Profile',
+	metaInfo() {
+		return {
+			title: this.$title('Профиль')
+		};
+	},
 	data: () => ({
 		name: '',
 		bill: ''

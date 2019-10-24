@@ -3,9 +3,7 @@
 		<Loader v-if="loading" />
 		<div v-else-if="record">
 			<div class="breadcrumb-wrap">
-				<router-link to="/history" class="breadcrumb"
-					>История</router-link
-				>
+				<router-link to="/history" class="breadcrumb">История</router-link>
 				<a @click.prevent="" class="breadcrumb">
 					{{ record.type === 'income' ? 'Доход' : 'Расход' }}
 				</a>
@@ -36,6 +34,11 @@
 
 <script>
 export default {
+	metaInfo() {
+		return {
+			title: this.$title('Запись')
+		};
+	},
 	name: 'detail',
 	data: () => ({
 		record: null,
@@ -44,10 +47,7 @@ export default {
 	async mounted() {
 		const id = this.$route.params.id;
 		const record = await this.$store.dispatch('fetchRecordById', id);
-		const category = await this.$store.dispatch(
-			'fetchCategoryById',
-			record.categoryId
-		);
+		const category = await this.$store.dispatch('fetchCategoryById', record.categoryId);
 
 		this.record = {
 			...record,

@@ -8,20 +8,14 @@
 					type="text"
 					v-model.trim="email"
 					:class="{
-						invalid:
-							($v.email.$dirty && !$v.email.required) ||
-							($v.email.$dirty && !$v.email.email)
+						invalid: ($v.email.$dirty && !$v.email.required) || ($v.email.$dirty && !$v.email.email)
 					}"
 				/>
 				<label for="email">Электронная почта</label>
-				<small
-					class="helper-text invalid"
-					v-if="$v.email.$dirty && !$v.email.required"
+				<small class="helper-text invalid" v-if="$v.email.$dirty && !$v.email.required"
 					>Поле не должно быть пустым</small
 				>
-				<small
-					class="helper-text invalid"
-					v-else-if="$v.email.$dirty && !$v.email.email"
+				<small class="helper-text invalid" v-else-if="$v.email.$dirty && !$v.email.email"
 					>Введите корректную электронную почту</small
 				>
 			</div>
@@ -35,19 +29,14 @@
 					}"
 				/>
 				<label for="password">Пароль</label>
-				<small
-					class="helper-text invalid"
-					v-if="$v.password.$dirty && !$v.password.required"
+				<small class="helper-text invalid" v-if="$v.password.$dirty && !$v.password.required"
 					>Поле не должно быть пустым</small
 				>
 			</div>
 		</div>
 		<div class="card-action">
 			<div>
-				<button
-					class="btn waves-effect waves-light auth-submit"
-					type="submit"
-				>
+				<button class="btn waves-effect waves-light auth-submit" type="submit">
 					Войти
 					<i class="material-icons right">send</i>
 				</button>
@@ -67,6 +56,11 @@ import messages from '../utils/messages';
 
 export default {
 	name: 'Login',
+	metaInfo() {
+		return {
+			title: this.$title('Вход')
+		};
+	},
 	data: () => ({
 		email: '',
 		password: ''

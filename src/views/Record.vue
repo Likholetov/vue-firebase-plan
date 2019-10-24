@@ -89,6 +89,11 @@
 
     export default {
         name: "Record",
+        metaInfo() {
+		return {
+			title: this.$title('Запись')
+		};
+	},
         data: () => ({
             categories: [],
             select: null,

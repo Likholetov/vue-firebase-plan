@@ -8,7 +8,9 @@ import dateFilter from './filters/date.filter';
 import currencyFilter from './filters/currency.filter';
 import tooltipDirective from './directives/tooltip.directive';
 import messagePlugin from './utils/message.plugin';
+import titlePlugin from './utils/title.plugin';
 import Loader from './components/app/Loader';
+import VueMeta from 'vue-meta';
 import './registerServiceWorker';
 import 'materialize-css/dist/js/materialize.min.js';
 
@@ -21,7 +23,9 @@ import 'firebase/database';
 Vue.config.productionTip = false;
 
 Vue.use(messagePlugin);
+Vue.use(titlePlugin);
 Vue.use(Vuelidate);
+Vue.use(VueMeta);
 Vue.filter('date', dateFilter);
 Vue.filter('currency', currencyFilter);
 Vue.directive('tooltip', tooltipDirective);
