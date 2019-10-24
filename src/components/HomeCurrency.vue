@@ -15,9 +15,9 @@
 					</thead>
 
 					<tbody>
-						<tr v-for="cur of currencies" :key="cur">
+						<tr v-for="(cur, index) of currencies" :key="cur">
 							<td>{{ cur }}</td>
-							<td>{{ rates[cur] }}</td>
+							<td>{{ (rates[index].buy / rates[2].buy).toFixed(2) }}</td>
 							<td>{{ date | date('date') }}</td>
 						</tr>
 					</tbody>
@@ -32,7 +32,7 @@ export default {
 	name: 'HomeCurrency',
 	props: ['rates', 'date'],
 	data: () => ({
-		currencies: ['RUB', 'USD', 'EUR']
+		currencies: ['USD', 'EUR', 'RUB']
 	})
 };
 </script>

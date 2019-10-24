@@ -4,10 +4,7 @@
 			<div class="page-title">
 				<h3>Счет</h3>
 
-				<button
-					class="btn waves-effect waves-light btn-small"
-					@click="refresh"
-				>
+				<button class="btn waves-effect waves-light btn-small" @click="refresh">
 					<i class="material-icons">refresh</i>
 				</button>
 			</div>
@@ -15,9 +12,9 @@
 			<Loader v-if="loading" />
 
 			<div v-else class="row">
-				<HomeBill :rates="currency.rates" />
+				<HomeBill :rates="currency" />
 
-				<HomeCurrency :rates="currency.rates" :date="currency.date" />
+				<HomeCurrency :rates="currency" :date="date" />
 			</div>
 		</div>
 	</div>
@@ -32,7 +29,8 @@ export default {
 	components: { HomeCurrency, HomeBill },
 	data: () => ({
 		loading: true,
-		currency: null
+		currency: null,
+		date: new Date()
 	}),
 	async mounted() {
 		this.currency = await this.$store.dispatch('fetchCurrency');
