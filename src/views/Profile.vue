@@ -13,20 +13,25 @@
 					:class="{ invalid: $v.name.$dirty && !$v.name.required }"
 				/>
 				<label for="description">Имя</label>
-				<span
-					class="helper-text invalid"
-					v-if="$v.name.$dirty && !$v.name.required"
+				<span class="helper-text invalid" v-if="$v.name.$dirty && !$v.name.required"
 					>Поле не должно быть пустым</span
 				>
 			</div>
 
-			<div class="switch">
-				<label>
-					English
-					<input type="checkbox" />
-					<span class="lever"></span>
-					Русский
-				</label>
+			<div class="input-field">
+				<input
+					id="bill"
+					type="text"
+					v-model.number="bill"
+					:class="{
+						invalid: ($v.bill.$dirty && !$v.bill.required) || ($v.bill.$dirty && !$v.bill.minValue)
+					}"
+				/>
+				<label for="bill">Счет</label>
+				<span class="helper-text invalid" v-if="$v.bill.$dirty && !$v.bill.required">Введите сумму</span>
+				<span class="helper-text invalid" v-if="$v.bill.$dirty && !$v.bill.minValue"
+					>Сумма не должна быть менее {{ $v.bill.$params.minValue.min }}</span
+				>
 			</div>
 
 			<button class="btn waves-effect waves-light" type="submit">
@@ -38,19 +43,22 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import { required } from 'vuelidate/lib/validators';
+import { mapGetters, mapActions } from 'vuex';
+import { required, minValue } from 'vuelidate/lib/validators';
 
 export default {
 	name: 'Profile',
 	data: () => ({
-		name: ''
+		name: '',
+		bill: ''
 	}),
 	validations: {
-		name: { required }
+		name: { required },
+		bill: { required, minValue: minValue(1) }
 	},
 	mounted() {
 		this.name = this.info.name;
+		this.bill = this.info.bill;
 		setTimeout(() => {
 			M.updateTextFields();
 		}, 0);
@@ -59,21 +67,22 @@ export default {
 		...mapGetters(['info'])
 	},
 	methods: {
-		submitHandler() {
+		...mapActions(['updateInfo']),
+		async submitHandler() {
 			if (this.$v.$invalid) {
 				this.$v.$touch();
 				return;
 			}
 
 			try {
+				await this.updateInfo({
+					name: this.name,
+					bill: this.bill
+				});
 			} catch (e) {}
 		}
 	}
 };
 </script>
 
-<style scoped>
-.switch {
-	margin-bottom: 2rem;
-}
-</style>
+<style scoped></style>
