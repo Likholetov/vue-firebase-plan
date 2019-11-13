@@ -6,10 +6,12 @@ export default {
 			try {
 				const uid = await dispatch('getUid');
 				const categories =
-					(await firebase
-						.database()
-						.ref(`/users/${uid}/categories`)
-						.once('value')).val() || {};
+					(
+						await firebase
+							.database()
+							.ref(`/users/${uid}/categories`)
+							.once('value')
+					).val() || {};
 				return Object.keys(categories).map(key => ({
 					...categories[key],
 					id: key
@@ -23,11 +25,13 @@ export default {
 			try {
 				const uid = await dispatch('getUid');
 				const category =
-					(await firebase
-						.database()
-						.ref(`/users/${uid}/categories`)
-						.child(id)
-						.once('value')).val() || {};
+					(
+						await firebase
+							.database()
+							.ref(`/users/${uid}/categories`)
+							.child(id)
+							.once('value')
+					).val() || {};
 				return { ...category, id: id };
 			} catch (e) {
 				commit('setError', e);
