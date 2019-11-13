@@ -13,7 +13,7 @@
 		<p class="center" v-else-if="!records.length">Записей пока нет.</p>
 
 		<section v-else>
-			<HistoryTable :records="items" />
+			<HistoryTable :records="items" @deleted="deleteRecord" />
 
 			<Paginate
 				v-if="pageCount > 1"
@@ -51,12 +51,21 @@ export default {
 		records: []
 	}),
 	methods: {
+		async deleteRecord() {
+			this.loading = true;
+			this.records = await this.$store.dispatch('fetchRecords');
+			const categories = await this.$store.dispatch('fetchCategories');
+			this.setup(categories);
+			this.loading = false;
+		},
 		setup(categories) {
 			this.setupPagination(
 				this.records.map(record => {
 					return {
 						...record,
-						categoryName: categories.find(c => c.id === record.categoryId).title,
+						categoryName: categories.find(
+							c => c.id === record.categoryId
+						).title,
 						typeClass: record.type === 'income' ? 'green' : 'red',
 						typeText: record.type === 'income' ? 'доход' : 'расход'
 					};
@@ -70,7 +79,10 @@ export default {
 						label: 'Расходы по категориям',
 						data: categories.map(c => {
 							return this.records.reduce((total, r) => {
-								if (r.categoryId === c.id && r.type === 'outcome') {
+								if (
+									r.categoryId === c.id &&
+									r.type === 'outcome'
+								) {
 									total += +r.amount;
 								}
 								return total;

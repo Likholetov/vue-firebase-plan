@@ -8,6 +8,7 @@
 				<th>Категория</th>
 				<th>Тип</th>
 				<th>Открыть</th>
+				<th>Удалить</th>
 			</tr>
 		</thead>
 
@@ -32,6 +33,14 @@
 						<i class="material-icons">open_in_new</i>
 					</button>
 				</td>
+				<td>
+					<button
+						class="btn-small red btn"
+						@click="deleteRecord(record.id)"
+					>
+						<i class="material-icons">delete_outline</i>
+					</button>
+				</td>
 			</tr>
 		</tbody>
 	</table>
@@ -43,6 +52,14 @@ export default {
 		records: {
 			required: true,
 			type: Array
+		}
+	},
+	methods: {
+		async deleteRecord(id, idx) {
+			try {
+				await this.$store.dispatch('removeRecordById', id);
+				this.$emit('deleted');
+			} catch (e) {}
 		}
 	}
 };
