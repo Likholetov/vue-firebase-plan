@@ -23,3 +23,6 @@ yarn-error.log*
 # Firebase config
 src/config/firebase.js
 /.env
+.firebaserc
+firebase.json
+.firebase/hosting.ZGlzdA.cache
