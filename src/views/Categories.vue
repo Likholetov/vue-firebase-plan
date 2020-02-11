@@ -13,6 +13,7 @@
 					:categories="categories"
 					:key="categories.length + updateCount"
 					@updated="updateCategories"
+					@deleted="deleteCategory"
 				/>
 
 				<p class="center" v-else>Вы не добавляли категорий</p>
@@ -55,6 +56,9 @@ export default {
 			this.categories[idx].title = category.title;
 			this.categories[idx].limit = category.limit;
 			this.updateCount++;
+		},
+		async deleteCategory() {
+			this.categories = await this.$store.dispatch('fetchCategories');
 		}
 	}
 };

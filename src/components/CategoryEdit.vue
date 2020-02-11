@@ -60,6 +60,15 @@
 					>
 				</div>
 
+				<button
+					class="btn waves-effect waves-light"
+					style="margin-right: 10px;"
+					@click.prevent="deleteCategory"
+				>
+					Удалить
+					<i class="material-icons right">delete_outline</i>
+				</button>
+
 				<button class="btn waves-effect waves-light" type="submit">
 					Обновить
 					<i class="material-icons right">send</i>
@@ -114,6 +123,18 @@ export default {
 				await this.$store.dispatch('updateCategory', categoryData);
 				this.$message('Категория обновлена успешно!');
 				this.$emit('updated', categoryData);
+			} catch (e) {}
+		},
+		async deleteCategory() {
+			try {
+				const categoryData = {
+					id: this.current
+				};
+
+				await this.$store.dispatch('deleteCategory', categoryData);
+				this.$message('Категория удалена успешно!');
+				//this.select = M.FormSelect.init(this.$refs.select);
+				this.$emit('deleted');
 			} catch (e) {}
 		}
 	},

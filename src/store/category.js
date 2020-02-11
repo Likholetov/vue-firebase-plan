@@ -51,6 +51,39 @@ export default {
 				throw e;
 			}
 		},
+		async deleteCategory({ commit, dispatch }, { id }) {
+			try {
+				const uid = await dispatch('getUid');
+				const category = await firebase
+					.database()
+					.ref(`/users/${uid}/categories`)
+					.child(id)
+					.remove();
+				const records =
+					(
+						await firebase
+							.database()
+							.ref(`/users/${uid}/records`)
+							.once('value')
+					).val() || {};
+				const keyRecords = Object.keys(records).map(key => ({
+					...records[key],
+					id: key
+				}));
+				keyRecords.map(async record => {
+					if (record.categoryId == id) {
+						await firebase
+							.database()
+							.ref(`/users/${uid}/records`)
+							.child(record.id)
+							.remove();
+					}
+				});
+			} catch (e) {
+				commit('setError', e);
+				throw e;
+			}
+		},
 		async createCategory({ commit, dispatch }, { title, limit }) {
 			try {
 				const uid = await dispatch('getUid');
