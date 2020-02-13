@@ -23,7 +23,8 @@ export default {
 					.ref(`/users/${uid}/info`)
 					.set({
 						bill: 10000,
-						name: name
+						name: name,
+						delta: 10
 					});
 			} catch (e) {
 				commit('setError', e);
