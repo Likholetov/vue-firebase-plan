@@ -31,7 +31,7 @@
 							($v.bill.$dirty && !$v.bill.minValue)
 					}"
 				/>
-				<label for="bill">Счет</label>
+				<label for="bill">Счет ₽</label>
 				<span
 					class="helper-text invalid"
 					v-if="$v.bill.$dirty && !$v.bill.required"
@@ -77,6 +77,32 @@
 				>
 			</div>
 
+			<div class="input-field">
+				<input
+					id="deltaAmount"
+					type="text"
+					v-model.number="deltaAmount"
+					:class="{
+						invalid:
+							($v.deltaAmount.$dirty &&
+								!$v.deltaAmount.required) ||
+							($v.deltaAmount.$dirty && !$v.deltaAmount.minValue)
+					}"
+				/>
+				<label for="delta">Дельта ₽</label>
+				<span
+					class="helper-text invalid"
+					v-if="$v.deltaAmount.$dirty && !$v.deltaAmount.required"
+					>Введите дельту</span
+				>
+				<span
+					class="helper-text invalid"
+					v-if="$v.deltaAmount.$dirty && !$v.deltaAmount.minValue"
+					>Дельта не должна быть менее
+					{{ $v.deltaAmount.$params.minValue.min }}</span
+				>
+			</div>
+
 			<button class="btn waves-effect waves-light" type="submit">
 				Обновить
 				<i class="material-icons right">send</i>
@@ -99,17 +125,20 @@ export default {
 	data: () => ({
 		name: '',
 		bill: '',
-		delta: ''
+		delta: '',
+		deltaAmount: ''
 	}),
 	validations: {
 		name: { required },
-		bill: { required, minValue: minValue(1) },
-		delta: { required, minValue: minValue(1), maxValue: maxValue(99) }
+		bill: { required, minValue: minValue(0) },
+		delta: { required, minValue: minValue(1), maxValue: maxValue(99) },
+		deltaAmount: { required, minValue: minValue(0) }
 	},
 	mounted() {
 		this.name = this.info.name;
 		this.bill = this.info.bill;
 		this.delta = this.info.delta;
+		this.deltaAmount = this.info.deltaAmount;
 		setTimeout(() => {
 			M.updateTextFields();
 		}, 0);
@@ -129,7 +158,8 @@ export default {
 				await this.updateInfo({
 					name: this.name,
 					bill: this.bill,
-					delta: this.delta
+					delta: this.delta,
+					deltaAmount: this.deltaAmount
 				});
 			} catch (e) {}
 		}

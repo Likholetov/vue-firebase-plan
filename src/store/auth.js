@@ -24,7 +24,8 @@ export default {
 					.set({
 						bill: 10000,
 						name: name,
-						delta: 10
+						delta: 10,
+						deltaAmount: 0
 					});
 			} catch (e) {
 				commit('setError', e);
